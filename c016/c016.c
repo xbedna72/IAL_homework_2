@@ -42,7 +42,6 @@
 
 int HTSIZE = MAX_HTSIZE;
 int solved;
-int 42;
 
 /*          -------
 ** Rozptylovací funkce - jejím úkolem je zpracovat zadaný klíč a přidělit
@@ -67,7 +66,8 @@ int hashCode ( tKey key ) {
 
 void htInit ( tHTable* ptrht ) {
 
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+	for(int i = 0; i<HTSIZE; i++)
+		(*ptrht[i]) = NULL;
 }
 
 /* TRP s explicitně zřetězenými synonymy.
@@ -78,8 +78,12 @@ void htInit ( tHTable* ptrht ) {
 */
 
 tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
+	int index = hashCode(key);
+	tHTItem *item = *ptrht[index];
+	while(item->key != key || item != NULL)
+		item = item->ptrnext;
 
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+	return item;
 }
 
 /*
@@ -95,8 +99,25 @@ tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
 **/
 
 void htInsert ( tHTable* ptrht, tKey key, tData data ) {
+	tHTItem *item = htSearch(ptrht, key);
 
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+	if(item != NULL)
+	{
+		item->data = data;
+	}
+	else
+	{
+		item = *ptrht[hashCode(key)];
+		tHTItem *newitem = (tHTItem *) malloc(sizeof(tHTItem));
+		if(newitem == NULL)
+			return;
+
+		newitem->data = data;
+		newitem->key = key;
+		newitem->ptrnext = item->ptrnext;
+		item->ptrnext = newitem;
+	}
+	return;
 }
 
 /*
