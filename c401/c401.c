@@ -54,20 +54,19 @@ void BSTInit (tBSTNodePtr *RootPtr) {
 ** Proto je třeba při přiřazení přes RootPtr použít dereferenční operátor *.
 ** Ten bude použit i ve funkcích BSTDelete, BSTInsert a BSTDispose.
 **/
+if((*RootPtr) != NULL){
+		tBSTNodePtr *root = (tBSTNodePtr *) malloc(sizeof(struct tBSTNode));
+		if(root == NULL)
+		{
+			RootPtr = NULL;
+			return;
+		}
+		(*root)->LPtr = NULL;
+		(*root)->RPtr = NULL;
 
-	if()
-
-	tBSTNodePtr *root = (tBSTNodePtr *) malloc(sizeof(struct tBSTNode));
-	if(root == NULL)
-	{
-		RootPtr = NULL;
+		RootPtr = root;
 		return;
 	}
-	(*root)->LPtr = NULL;
-	(*root)->RPtr = NULL;
-
-	RootPtr = root;
-	return;
 }
 
 int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
@@ -117,7 +116,7 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 ** příklad, na kterém si chceme ukázat eleganci rekurzivního zápisu.
 **/
 
-	if(RootPtr == NULL)	//Listovy uzel
+	if((*RootPtr) == NULL)	//Listovy uzel
 		{
 				tBSTNodePtr *new_node = (tBSTNodePtr *) malloc(sizeof(struct tBSTNode));
 				if(new_node == NULL)
@@ -126,7 +125,7 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 				(*new_node)->Key = K;
 				(*new_node)->BSTNodeCont = Content;
 
-				RootPtr = new_node;
+				(*RootPtr) = new_node;
 				return;
 		}
 
@@ -162,7 +161,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** přečtěte si komentář k funkci BSTDelete().
 **/
 
-
+solved = 0;
 
 }
 
@@ -244,8 +243,7 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 ** funkce.
 **/
 
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	solved = 0;
 
 }
 
