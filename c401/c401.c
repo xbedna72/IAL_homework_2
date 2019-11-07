@@ -150,12 +150,30 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** Tato pomocná funkce bude použita dále. Než ji začnete implementovat,
 ** přečtěte si komentář k funkci BSTDelete().
 **/
-	if(RootPtr->RPtr == NULL)
+	if((*RootPtr)->RPtr == NULL)
 	{
 		PtrReplaced->Key = (*RootPtr)->Key;
-		PtrReplaced->BSTNodeCont = (*RootPtr)->
-	}
+		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
+		if((*RootPtr)->LPtr != NULL)
+		{
+			tBSTNodePtr node = (*RootPtr)->LPtr;
+			free(RootPtr);
+			*RootPtr = node;
+			return;
+		}
+		else
+		{
+			free(RootPtr);
+			*RootPtr = NULL;
+			return;
+		}
+	}
+	else
+	{
+		ReplaceByRightmost(PtrReplaced, &(*RootPtr)->RPtr);
+		return;
+	}
 }
 
 void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
