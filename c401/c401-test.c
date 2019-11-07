@@ -108,7 +108,7 @@ int test_BSTInsert (tBSTNodePtr* TempTree, char K, int Content)		{
 
 int test_BSTDelete (tBSTNodePtr* TempTree, char K)		{
 	solved=TRUE;
-	BSTDelete(TempTree, K);
+	BSTDelete(TempTree,K);
 	if (!solved)	{
 		printf("Operace BSTDelete() nebyla implementovana \n");
 		return(FALSE);
@@ -226,7 +226,7 @@ int main(int argc, char *argv[])			{
 	printf("Zrusime listovy uzel (A,1)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'A';
-	test_BSTDelete(&TempTree, K);
+	test_BSTDelete(&TempTree,K);
 
 	printf("[TEST12]\n");
 	printf("Zrusime uzel, ktery ma jen levy podstrom (R,10)\n");

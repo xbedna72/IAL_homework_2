@@ -150,25 +150,12 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** Tato pomocná funkce bude použita dále. Než ji začnete implementovat,
 ** přečtěte si komentář k funkci BSTDelete().
 **/
-
-	if((*RootPtr)->RPtr == NULL)
+	if(RootPtr->RPtr == NULL)
 	{
 		PtrReplaced->Key = (*RootPtr)->Key;
-		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
+		PtrReplaced->BSTNodeCont = (*RootPtr)->
+	}
 
-		if((*RootPtr)->LPtr != NULL)
-		{
-			tBSTNodePtr *left_subtree = &((*RootPtr)->LPtr);
-			free(RootPtr);
-			RootPtr = left_subtree;
-			return;
-		}
-	}
-	else
-	{
-		ReplaceByRightmost(PtrReplaced, &(*RootPtr)->RPtr);
-		return;
-	}
 }
 
 void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
@@ -187,59 +174,98 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 	if((*RootPtr) == NULL)	//Hledany uzel neexistuje
 		return;
 
-	if((*RootPtr)->Key > K)
+	else if((*RootPtr)->Key > K)
 	{
+			if((*RootPtr)->LPtr->Key == K)
+			{
+				tBSTNodePtr victim = (*RootPtr)->LPtr;
+
+				if(victim->LPtr == NULL && victim->RPtr == NULL)	//Listovy uzel
+				{
+					(*RootPtr)->LPtr = NULL;
+					free(victim);
+					return;
+				}
+				else if(victim->LPtr == NULL)	//Ma praveho syna
+				{
+					(*RootPtr)->LPtr = victim->RPtr;
+					free(victim);
+					return;
+				}
+				else if(victim->RPtr == NULL)	//Ma leveho syna
+				{
+					(*RootPtr)->LPtr = victim->LPtr;
+					free(victim);
+					return;
+				}
+				else if(victim->RPtr != NULL)
+				{
+					ReplaceByRightmost(victim, &(victim->LPtr));
+					return;
+				}
+			}
+
 		BSTDelete(&(*RootPtr)->LPtr, K); //Hledany je vlevo
 		return;
 	}
 
 	else if((*RootPtr)->Key < K)
 	{
-		BSTDelete(&(*RootPtr)->RPtr, K); //Hledany je vpravo
+			if((*RootPtr)->RPtr->Key == K)
+			{
+				tBSTNodePtr victim = (*RootPtr)->RPtr;
+
+				if(victim->RPtr == NULL && victim->LPtr == NULL)
+				{
+					(*RootPtr)->RPtr = NULL;
+					free(victim);
+					return;
+				}
+				else if(victim->LPtr == NULL)	//Ma praveho syna
+				{
+					(*RootPtr)->RPtr = victim->RPtr;
+					free(victim);
+					return;
+				}
+				else if(victim->RPtr == NULL) //Ma leveho syna
+				{
+					(*RootPtr)->RPtr = victim->LPtr;
+					free(victim);
+					return;
+				}
+				else if(victim->LPtr != NULL)
+				{
+					ReplaceByRightmost(victim, &(victim->LPtr));
+					return;
+				}
+			}
+
+		BSTDelete(&(*RootPtr)->RPtr, K); //Hledany je vlevo
 		return;
 	}
 
-	else //Nasel se hledany uzel k smazani
+	else
 	{
-		if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL) //Nema zadneho syna
+		if((*RootPtr)->LPtr != NULL && (*RootPtr)->RPtr != NULL)
 		{
-				free(RootPtr);
-				return;
-		}
-
-		else if((*RootPtr)->LPtr == NULL)	//Ma praveho syna
-		{
-			tBSTNodePtr *right_son = &((*RootPtr)->RPtr);
-			free(RootPtr);
-			RootPtr = right_son;
+			ReplaceByRightmost(*RootPtr, &((*RootPtr)->LPtr));
 			return;
 		}
-
-		else if((*RootPtr)->RPtr == NULL)	//Ma leveho syna
+		else if((*RootPtr)->RPtr != NULL)
 		{
-			tBSTNodePtr *left_son = &((*RootPtr)->LPtr);
+			tBSTNodePtr right_subtree = (*RootPtr)->RPtr;
 			free(RootPtr);
-			RootPtr = left_son;
+			*RootPtr = right_subtree;
 			return;
 		}
-
-		else	//Ma oba syny
+		else if((*RootPtr)->LPtr != NULL)
 		{
-			if((*RootPtr)->LPtr->RPtr != NULL)
-			{
-				ReplaceByRightmost(*RootPtr, &((*RootPtr)->LPtr));
-				return;
-			}
-
-			else
-			{
-				tBSTNodePtr *left_subtree = &((*RootPtr)->LPtr);
-				free(RootPtr);
-				RootPtr = left_subtree;
-				return;
-			}
-		}
+			tBSTNodePtr left_subtree = (*RootPtr)->LPtr;
+			free(RootPtr);
+			*RootPtr = left_subtree;
+			return;
 	}
+}
 }
 
 void BSTDispose (tBSTNodePtr *RootPtr) {
