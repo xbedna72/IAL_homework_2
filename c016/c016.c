@@ -65,9 +65,8 @@ int hashCode ( tKey key ) {
 */
 
 void htInit ( tHTable* ptrht ) {
-
 	for(int i = 0; i<HTSIZE; i++)
-		(*ptrht[i]) = NULL;
+		(*ptrht)[i] = NULL;
 }
 
 /* TRP s explicitně zřetězenými synonymy.
@@ -108,14 +107,15 @@ void htInsert ( tHTable* ptrht, tKey key, tData data ) {
 	else
 	{
 		item = *ptrht[hashCode(key)];
-		tHTItem *newitem = (tHTItem *) malloc(sizeof(tHTItem));
-		if(newitem == NULL)
+		tHTItem *new_item = (tHTItem *) malloc(sizeof(tHTItem));
+		if(new_item == NULL)
 			return;
 
-		newitem->data = data;
-		newitem->key = key;
-		newitem->ptrnext = item->ptrnext;
-		item->ptrnext = newitem;
+		new_item->data = data;
+		new_item->key = key;
+		new_item->ptrnext = item->ptrnext;
+
+		item->ptrnext = new_item;
 	}
 	return;
 }
@@ -130,8 +130,20 @@ void htInsert ( tHTable* ptrht, tKey key, tData data ) {
 */
 
 tData* htRead ( tHTable* ptrht, tKey key ) {
+	if(ptrht != NULL)
+	{
+		tHTItem *item = htSearch(ptrht, key);
 
- solved = 0; /*v pripade reseni, smazte tento radek!*/
+		if(item != NULL)
+		{
+			if(item->key == key)
+				return &(item->data);
+			else
+				return NULL;
+		}
+		return NULL;
+	}
+	return NULL;
 }
 
 /*
