@@ -54,19 +54,8 @@ void BSTInit (tBSTNodePtr *RootPtr) {
 ** Proto je třeba při přiřazení přes RootPtr použít dereferenční operátor *.
 ** Ten bude použit i ve funkcích BSTDelete, BSTInsert a BSTDispose.
 **/
-if((*RootPtr) != NULL){
-		tBSTNodePtr *root = (tBSTNodePtr *) malloc(sizeof(struct tBSTNode));
-		if(root == NULL)
-		{
-			RootPtr = NULL;
-			return;
-		}
-		(*root)->LPtr = NULL;
-		(*root)->RPtr = NULL;
 
-		RootPtr = root;
-		return;
-	}
+	*RootPtr = NULL;
 }
 
 int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
@@ -94,7 +83,7 @@ int BSTSearch (tBSTNodePtr RootPtr, char K, int *Content)	{
 
 	else
 	{
-		Content = &(RootPtr)->BSTNodeCont;
+		*Content = RootPtr->BSTNodeCont;
 		return 1;
 	}
 }
@@ -118,14 +107,15 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 
 	if((*RootPtr) == NULL)	//Listovy uzel
 		{
-				tBSTNodePtr *new_node = (tBSTNodePtr *) malloc(sizeof(struct tBSTNode));
-				if(new_node == NULL)
+				(*RootPtr) = (tBSTNodePtr) malloc(sizeof(struct tBSTNode));
+				if((*RootPtr) == NULL)
 					return;
 
-				(*new_node)->Key = K;
-				(*new_node)->BSTNodeCont = Content;
+				(*RootPtr)->Key = K;
+				(*RootPtr)->BSTNodeCont = Content;
+				(*RootPtr)->LPtr = NULL;
+				(*RootPtr)->RPtr = NULL;
 
-				(*RootPtr) = new_node;
 				return;
 		}
 
@@ -143,7 +133,7 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 
 	else
 	{
-		Content = (*RootPtr)->BSTNodeCont;
+		(*RootPtr)->BSTNodeCont = Content;
 		return;
 	}
 }
@@ -161,8 +151,24 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** přečtěte si komentář k funkci BSTDelete().
 **/
 
-solved = 0;
+	if((*RootPtr)->RPtr == NULL)
+	{
+		PtrReplaced->Key = (*RootPtr)->Key;
+		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
+		if((*RootPtr)->LPtr != NULL)
+		{
+			tBSTNodePtr *left_subtree = &((*RootPtr)->LPtr);
+			free(RootPtr);
+			RootPtr = left_subtree;
+			return;
+		}
+	}
+	else
+	{
+		ReplaceByRightmost(PtrReplaced, &(*RootPtr)->RPtr);
+		return;
+	}
 }
 
 void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
@@ -178,60 +184,62 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 ** pomocné funkce ReplaceByRightmost.
 **/
 
-	if(RootPtr == NULL)
-	{
-		RootPtr = NULL;
+	if((*RootPtr) == NULL)	//Hledany uzel neexistuje
 		return;
-	}
 
 	if((*RootPtr)->Key > K)
 	{
 		BSTDelete(&(*RootPtr)->LPtr, K); //Hledany je vlevo
 		return;
 	}
+
 	else if((*RootPtr)->Key < K)
 	{
 		BSTDelete(&(*RootPtr)->RPtr, K); //Hledany je vpravo
 		return;
 	}
+
 	else //Nasel se hledany uzel k smazani
 	{
-		if((*RootPtr)->LPtr != NULL && (*RootPtr)->RPtr == NULL) //Nema zadneho syna
+		if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL) //Nema zadneho syna
 		{
 				free(RootPtr);
 				return;
 		}
-		else if((*RootPtr)->LPtr != NULL)	//Ma praveho syna
+
+		else if((*RootPtr)->LPtr == NULL)	//Ma praveho syna
 		{
-			tBSTNodePtr *right_son = &(*RootPtr)->RPtr;
+			tBSTNodePtr *right_son = &((*RootPtr)->RPtr);
 			free(RootPtr);
-			RootPtr = &(*right_son);
+			RootPtr = right_son;
 			return;
 		}
-		else if((*RootPtr)->RPtr != NULL)	//Ma leveho syna
+
+		else if((*RootPtr)->RPtr == NULL)	//Ma leveho syna
 		{
-			tBSTNodePtr *left_son = &(*RootPtr)->LPtr;
+			tBSTNodePtr *left_son = &((*RootPtr)->LPtr);
 			free(RootPtr);
-			RootPtr = &(*left_son);
+			RootPtr = left_son;
 			return;
 		}
+
 		else	//Ma oba syny
 		{
 			if((*RootPtr)->LPtr->RPtr != NULL)
 			{
-				ReplaceByRightmost(*RootPtr, &(*RootPtr)->LPtr->RPtr);
+				ReplaceByRightmost(*RootPtr, &((*RootPtr)->LPtr));
 				return;
 			}
+
 			else
 			{
-				tBSTNodePtr *left_subtree = &(*RootPtr)->LPtr;
+				tBSTNodePtr *left_subtree = &((*RootPtr)->LPtr);
 				free(RootPtr);
-				RootPtr = &(*left_subtree);
+				RootPtr = left_subtree;
 				return;
 			}
 		}
 	}
-
 }
 
 void BSTDispose (tBSTNodePtr *RootPtr) {

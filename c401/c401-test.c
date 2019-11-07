@@ -7,14 +7,14 @@
 
     kompletni upravy: Roman Lukas, 2006
     upravil: Karel Masarik, rijen 2013
-													 */	
+													 */
 /* ***************************************************************** */
 
 
 #include "c401.h"
 #include <string.h>
 
-tBSTNodePtr TempTree;			/* deklarace testovaci promenne */ 
+tBSTNodePtr TempTree;			/* deklarace testovaci promenne */
 
 int Content_of_Search;
 int Content_of_Insert;
@@ -39,7 +39,7 @@ void Print_tree2(tBSTNodePtr TempTree, char* sufix, char fromdir)
         printf("%s  +-[%c,%d]\n", sufix, TempTree->Key, TempTree->BSTNodeCont);
 	strcpy(suf2, sufix);
         if (fromdir == 'R')
-	   suf2 = strcat(suf2, "  |");	
+	   suf2 = strcat(suf2, "  |");
 	else
 	   suf2 = strcat(suf2, "   ");
 	Print_tree2(TempTree->LPtr, suf2, 'L');
@@ -58,7 +58,7 @@ void Print_tree(tBSTNodePtr TempTree)
      printf("strom je prazdny\n");
   printf("\n");
   printf("=================================================\n");
-} 
+}
 
 int test_BSTInit(tBSTNodePtr *TempTree)			{
 	solved=TRUE;
@@ -66,8 +66,8 @@ int test_BSTInit(tBSTNodePtr *TempTree)			{
 	if (!solved)	{
 		printf("Operace InitList() nebyla implementovana \n");
 		return(FALSE);
-	}	
-	else	
+	}
+	else
 	{
 	        Print_tree(*TempTree);
 		return(TRUE);
@@ -89,13 +89,13 @@ int test_BSTSearch(tBSTNodePtr TempTree, char K, int *Content)	{
 			printf("Polozka byla nalezena !\n");
 			printf("Polozka obsahuje hodnotu %d \n", *Content);
 		}
-		return(TRUE);			
+		return(TRUE);
 	}
 }
-	
+
 int test_BSTInsert (tBSTNodePtr* TempTree, char K, int Content)		{
 	solved=TRUE;
-	BSTInsert(TempTree, K, Content);	
+	BSTInsert(TempTree, K, Content);
 	if (!solved)	{
 		printf("Operace BSTInsert() nebyla implementovana \n");
 		return(FALSE);
@@ -108,7 +108,7 @@ int test_BSTInsert (tBSTNodePtr* TempTree, char K, int Content)		{
 
 int test_BSTDelete (tBSTNodePtr* TempTree, char K)		{
 	solved=TRUE;
-	BSTDelete(TempTree,K);
+	BSTDelete(TempTree, K);
 	if (!solved)	{
 		printf("Operace BSTDelete() nebyla implementovana \n");
 		return(FALSE);
@@ -132,49 +132,49 @@ int test_BSTDispose(tBSTNodePtr* TempTree)		{
 	}
 }
 
-/* .......................... sekce volani jednotlivych testu .............................*/ 
+/* .......................... sekce volani jednotlivych testu .............................*/
 
 int main(int argc, char *argv[])			{
-	
+
 	printf("Binarni vyhledavaci strom\n");
 	printf("=========================\n");
-	
+
 	printf("[TEST01]\n");
 	printf("Test inicializace....\n");
 	test_BSTInit(&TempTree);
-	
+
 	printf("[TEST02]\n");
 	printf("Zkusime zrusit strom\n");
 	printf("~~~~~~~~~~~~~~~~~~~~\n");
 	test_BSTDispose(&TempTree);
-	
+
 	printf("[TEST03]\n");
 	printf("Pokusime se vyhledat polozku s klicem 'A' -- nenalezne se\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'A';
 	test_BSTSearch(TempTree,K,&Content_of_Search);
-	
+
 	printf("[TEST04]\n");
 	printf("Vlozime prvni prvek (H,1)\n");
 	K = 'H';
 	Content_of_Insert=1;
 	test_BSTInsert(&TempTree,K,Content_of_Insert);
-	
+
 	printf("[TEST05]\n");
 	printf("Pokusime se vyhledat polozku s klicem H\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	test_BSTSearch(TempTree,K,&Content_of_Search);
-	
+
 	printf("[TEST06]\n");
-	printf("Vlozime prvek (H,8) - pouze zmena hodnoty\n");   
+	printf("Vlozime prvek (H,8) - pouze zmena hodnoty\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	Content_of_Insert=8;
 	test_BSTInsert(&TempTree,K,Content_of_Insert);
-	
+
 	printf("[TEST07]\n");
 	printf("Vlozime dalsi prvky a vytvorime tak symetricky binarni strom \n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
-	
+
 	BSTInsert(&TempTree,'D',4);
 	BSTInsert(&TempTree,'L',12);
 	BSTInsert(&TempTree,'B',2);
@@ -189,9 +189,9 @@ int main(int argc, char *argv[])			{
 	BSTInsert(&TempTree,'K',11);
 	BSTInsert(&TempTree,'M',13);
 	BSTInsert(&TempTree,'O',16);
-	
+
 	Print_tree(TempTree);
-	
+
 	printf("[TEST08]\n");
 	printf("Pokusime se vyhledat polozky s klici 'A', 'B'\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])			{
 	test_BSTSearch(TempTree,K,&Content_of_Search);
 	K='B';
 	test_BSTSearch(TempTree,K,&Content_of_Search);
-	
+
 	printf("[TEST09]\n");
 	printf("Pokusime se vyhledat polozky s klici 'X', 'Y'\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
@@ -207,11 +207,11 @@ int main(int argc, char *argv[])			{
 	test_BSTSearch(TempTree,K,&Content_of_Search);
 	K='Y';
 	test_BSTSearch(TempTree,K,&Content_of_Search);
-	
+
 	printf("[TEST10]\n");
 	printf("Pridame vhodne jeste dalsi prvky \n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
-	
+
 	BSTInsert(&TempTree,'S',10);
 	BSTInsert(&TempTree,'R',10);
 	BSTInsert(&TempTree,'Q',10);
@@ -219,58 +219,58 @@ int main(int argc, char *argv[])			{
 	BSTInsert(&TempTree,'X',10);
 	BSTInsert(&TempTree,'Y',10);
 	BSTInsert(&TempTree,'Z',10);
-	
+
 	Print_tree(TempTree);
-	
+
 	printf("[TEST11]\n");
 	printf("Zrusime listovy uzel (A,1)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'A';
-	test_BSTDelete(&TempTree,K);
-    
+	test_BSTDelete(&TempTree, K);
+
 	printf("[TEST12]\n");
 	printf("Zrusime uzel, ktery ma jen levy podstrom (R,10)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'R';
 	test_BSTDelete(&TempTree, K);
-    
+
 	printf("[TEST13]\n");
 	printf("Zrusime uzel, ktery ma jen pravy podstrom (X,10)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
 	K = 'X';
 	test_BSTDelete(&TempTree, K);
-	
+
 	printf("[TEST14]\n");
 	printf("Zrusime uzel, ktery ma oba podstromy (L,12)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'L';
 	test_BSTDelete(&TempTree, K);
-    
+
 	printf("[TEST15]\n");
 	printf("Pokusime se zrusit uzel, ktery neexistuje (U,?)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'U';
 	test_BSTDelete(&TempTree, K);
 
-	printf("[TEST16]\n");	
+	printf("[TEST16]\n");
 	printf("Zrusime korenovy uzel (H,8)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'H';
 	test_BSTDelete(&TempTree, K);
 
-	printf("[TEST17]\n");	
+	printf("[TEST17]\n");
 	printf("Zrusime dalsi uzel (K,11)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'K';
 	test_BSTDelete(&TempTree, K);
 
-	printf("[TEST18]\n");	
+	printf("[TEST18]\n");
 	printf("Zrusime dalsi  uzel (D,4)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'D';
 	test_BSTDelete(&TempTree, K);
 
-	printf("[TEST19]\n");	
+	printf("[TEST19]\n");
 	printf("Zrusime dalsi uzel (S,10)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'S';
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])			{
 	printf("Nakonec zrusime cely strom\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	test_BSTDispose(&TempTree);
-	
+
 	printf("------------------------------ konec -------------------------------------\n");
 	return(0);
 }
