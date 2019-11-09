@@ -229,9 +229,9 @@ int main(int argc, char *argv[])			{
 	test_BSTDelete(&TempTree,K); */
 
   printf("[TEST11.5]\n");
-	printf("Zrusime listovy uzel (O,16)\n");
+	printf("Zrusime listovy uzel (F,6)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-	K = 'O';
+	K = 'F';
 	test_BSTDelete(&TempTree,K);
 
 	printf("[TEST12]\n");

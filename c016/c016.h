@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 extern int solved;			/* externi promenna pouzivana v testeru */
 

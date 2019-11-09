@@ -78,8 +78,8 @@ void htInit ( tHTable* ptrht ) {
 
 tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
 	int index = hashCode(key);
-	tHTItem *item = *ptrht[index];
-	while(item->key != key || item != NULL)
+	tHTItem *item = (*ptrht)[index];
+	while(item->key != key && item != NULL)
 		item = item->ptrnext;
 
 	return item;
@@ -98,24 +98,30 @@ tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
 **/
 
 void htInsert ( tHTable* ptrht, tKey key, tData data ) {
-	tHTItem *item = htSearch(ptrht, key);
+	if((*ptrht) != NULL)
+	{
+		printf("Here1\n");
+		tHTItem *item = htSearch(ptrht, key);
+		if(item != NULL)
+		{
+			item->data = data;
+			return;
+		}
 
-	if(item != NULL)
-	{
-		item->data = data;
-	}
-	else
-	{
-		item = *ptrht[hashCode(key)];
-		tHTItem *new_item = (tHTItem *) malloc(sizeof(tHTItem));
+		printf("Here2\n");
+
+		int index = hashCode(key);
+		item = (*ptrht)[index];
+		tHTItem *new_item = (tHTItem *) malloc(sizeof(struct tHTItem));
 		if(new_item == NULL)
 			return;
 
+		printf("Here3\n");
 		new_item->data = data;
 		new_item->key = key;
-		new_item->ptrnext = item->ptrnext;
+		new_item->ptrnext = item;
 
-		item->ptrnext = new_item;
+		(*ptrht)[index] = new_item;
 	}
 	return;
 }
