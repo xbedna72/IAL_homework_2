@@ -157,7 +157,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
 		tBSTNodePtr left_subtree = (*RootPtr)->LPtr;
-		free(RootPtr);
+		free(*RootPtr);
 		(*RootPtr) = left_subtree;
 		return;
 	}
@@ -167,7 +167,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
 		tBSTNodePtr right_subtree = (*RootPtr)->RPtr;
-		free(RootPtr);
+		free(*RootPtr);
 		(*RootPtr) = right_subtree;
 		return;
 	}
@@ -176,7 +176,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 		PtrReplaced->Key = (*RootPtr)->Key;
 		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
-		free(RootPtr);
+		free((*RootPtr));
 		(*RootPtr) = NULL;
 		return;
 	}
@@ -199,8 +199,13 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 ** Tuto funkci implementujte rekurzivně s využitím dříve deklarované
 ** pomocné funkce ReplaceByRightmost.
 **/
+	int data;
+	if(BSTSearch((*RootPtr), K, &data) == 0)
+	{
+		return;
+	}
 
-	if((*RootPtr) == NULL)	//Strom je prazdny
+	if((*RootPtr) == NULL)
 	{
 		return;
 	}
@@ -282,27 +287,23 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 		else if((*RootPtr)->RPtr != NULL)
 		{
 			tBSTNodePtr right_subtree = (*RootPtr)->RPtr;
-			free(RootPtr);
+			free(*RootPtr);
 			*RootPtr = right_subtree;
 			return;
 		}
 		else if((*RootPtr)->LPtr != NULL)
 		{
 			tBSTNodePtr left_subtree = (*RootPtr)->LPtr;
-			free(RootPtr);
+			free(*RootPtr);
 			*RootPtr = left_subtree;
 			return;
 		}
 		else
 		{
-			free(RootPtr);
+			free(*RootPtr);
 			(*RootPtr) = NULL;
 			return;
 		}
-	}
-	else if((*RootPtr)->Key != K && (*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)	//Uzel ve stromu neni.
-	{
-		return;
 	}
 }
 
@@ -320,7 +321,7 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 
 	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)
 	{
-		free(RootPtr);
+		free(*RootPtr);
 		(*RootPtr) = NULL;
 	}
 	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr != NULL)
