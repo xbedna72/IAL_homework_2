@@ -150,28 +150,39 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 ** Tato pomocná funkce bude použita dále. Než ji začnete implementovat,
 ** přečtěte si komentář k funkci BSTDelete().
 **/
-	if((*RootPtr)->RPtr == NULL)
+
+	if((*RootPtr)->RPtr == NULL && (*RootPtr)->LPtr != NULL)
 	{
 		PtrReplaced->Key = (*RootPtr)->Key;
 		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
 
-		if((*RootPtr)->LPtr != NULL)
-		{
-			tBSTNodePtr node = (*RootPtr)->LPtr;
-			free(RootPtr);
-			*RootPtr = node;
-			return;
-		}
-		else
-		{
-			free(RootPtr);
-			*RootPtr = NULL;
-			return;
-		}
+		tBSTNodePtr left_subtree = (*RootPtr)->LPtr;
+		free(RootPtr);
+		(*RootPtr) = left_subtree;
+		return;
+	}
+	else if((*RootPtr)->RPtr != NULL && (*RootPtr)->LPtr == NULL)
+	{
+		PtrReplaced->Key = (*RootPtr)->Key;
+		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
+
+		tBSTNodePtr right_subtree = (*RootPtr)->RPtr;
+		free(RootPtr);
+		(*RootPtr) = right_subtree;
+		return;
+	}
+	else if((*RootPtr)->RPtr == NULL && (*RootPtr)->LPtr == NULL)
+	{
+		PtrReplaced->Key = (*RootPtr)->Key;
+		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
+
+		free(RootPtr);
+		(*RootPtr) = NULL;
+		return;
 	}
 	else
 	{
-		ReplaceByRightmost(PtrReplaced, &(*RootPtr)->RPtr);
+		ReplaceByRightmost(PtrReplaced, &((*RootPtr)->RPtr));
 		return;
 	}
 }
@@ -189,10 +200,11 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 ** pomocné funkce ReplaceByRightmost.
 **/
 
-	if((*RootPtr) == NULL)	//Hledany uzel neexistuje
+	if((*RootPtr) == NULL)	//Strom je prazdny
+	{
 		return;
-
-	else if((*RootPtr)->Key > K)
+	}
+	else if((*RootPtr)->Key > K) //Uzel je vlevo
 	{
 			if((*RootPtr)->LPtr->Key == K)
 			{
@@ -204,30 +216,29 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 					free(victim);
 					return;
 				}
-				else if(victim->LPtr == NULL)	//Ma praveho syna
+				else if(victim->LPtr == NULL && victim->RPtr != NULL)	//Ma praveho syna
 				{
 					(*RootPtr)->LPtr = victim->RPtr;
 					free(victim);
 					return;
 				}
-				else if(victim->RPtr == NULL)	//Ma leveho syna
+				else if(victim->RPtr == NULL && victim->LPtr != NULL)	//Ma leveho syna
 				{
 					(*RootPtr)->LPtr = victim->LPtr;
 					free(victim);
 					return;
 				}
-				else if(victim->RPtr != NULL)
+				else //Ma oba syny
 				{
-					ReplaceByRightmost(victim, &(victim->LPtr));
+					ReplaceByRightmost(victim, &((victim)->LPtr));
 					return;
 				}
 			}
 
-		BSTDelete(&(*RootPtr)->LPtr, K); //Hledany je vlevo
+		BSTDelete(&((*RootPtr)->LPtr), K); //Hledany je vlevo
 		return;
 	}
-
-	else if((*RootPtr)->Key < K)
+	else if((*RootPtr)->Key < K) //Uzel je vpravo
 	{
 			if((*RootPtr)->RPtr->Key == K)
 			{
@@ -239,34 +250,33 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 					free(victim);
 					return;
 				}
-				else if(victim->LPtr == NULL)	//Ma praveho syna
+				else if(victim->LPtr == NULL && victim->RPtr != NULL)	//Ma praveho syna
 				{
 					(*RootPtr)->RPtr = victim->RPtr;
 					free(victim);
 					return;
 				}
-				else if(victim->RPtr == NULL) //Ma leveho syna
+				else if(victim->RPtr == NULL && victim->LPtr != NULL) //Ma leveho syna
 				{
 					(*RootPtr)->RPtr = victim->LPtr;
 					free(victim);
 					return;
 				}
-				else if(victim->LPtr != NULL)
+				else
 				{
-					ReplaceByRightmost(victim, &(victim->LPtr));
+					ReplaceByRightmost(victim, &((victim)->LPtr));
 					return;
 				}
 			}
 
-		BSTDelete(&(*RootPtr)->RPtr, K); //Hledany je vlevo
+		BSTDelete(&((*RootPtr)->RPtr), K); //Hledany je vlevo
 		return;
 	}
-
-	else
+	else if((*RootPtr)->Key == K) //Hledany uzel je korenem stromu
 	{
 		if((*RootPtr)->LPtr != NULL && (*RootPtr)->RPtr != NULL)
 		{
-			ReplaceByRightmost(*RootPtr, &((*RootPtr)->LPtr));
+			ReplaceByRightmost((*RootPtr), &((*RootPtr)->LPtr));
 			return;
 		}
 		else if((*RootPtr)->RPtr != NULL)
@@ -282,8 +292,18 @@ void BSTDelete (tBSTNodePtr *RootPtr, char K) 		{
 			free(RootPtr);
 			*RootPtr = left_subtree;
 			return;
+		}
+		else
+		{
+			free(RootPtr);
+			(*RootPtr) = NULL;
+			return;
+		}
 	}
-}
+	else if((*RootPtr)->Key != K && (*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)	//Uzel ve stromu neni.
+	{
+		return;
+	}
 }
 
 void BSTDispose (tBSTNodePtr *RootPtr) {
@@ -295,7 +315,24 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 ** funkce.
 **/
 
-	solved = 0;
+	if((*RootPtr) == NULL)
+		return;
+
+	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)
+	{
+		free(RootPtr);
+		(*RootPtr) = NULL;
+	}
+	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr != NULL)
+	{
+		BSTDispose(&(*RootPtr)->RPtr);
+		return;
+	}
+	else
+	{
+		BSTDispose(&(*RootPtr)->LPtr);
+		return;
+	}
 
 }
 

@@ -222,10 +222,16 @@ int main(int argc, char *argv[])			{
 
 	Print_tree(TempTree);
 
-	printf("[TEST11]\n");
+	/* printf("[TEST11]\n");
 	printf("Zrusime listovy uzel (A,1)\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
 	K = 'A';
+	test_BSTDelete(&TempTree,K); */
+
+  printf("[TEST11.5]\n");
+	printf("Zrusime listovy uzel (O,16)\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+	K = 'O';
 	test_BSTDelete(&TempTree,K);
 
 	printf("[TEST12]\n");
