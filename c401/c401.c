@@ -119,21 +119,14 @@ void BSTInsert (tBSTNodePtr* RootPtr, char K, int Content)	{
 				return;
 		}
 
-	else if((*RootPtr)->Key > K)
-	{
-		BSTInsert(&(*RootPtr)->LPtr, K, Content);
-		return;
-	}
-
-	else if((*RootPtr)->Key < K)
-	{
-		BSTInsert(&(*RootPtr)->RPtr, K, Content);
-		return;
-	}
-
-	else
+	if((*RootPtr)->Key == K)
 	{
 		(*RootPtr)->BSTNodeCont = Content;
+		return;
+	}
+	else
+	{
+		(*RootPtr)->Key > K ? BSTInsert(&(*RootPtr)->LPtr, K, Content) : BSTInsert(&(*RootPtr)->RPtr, K, Content);
 		return;
 	}
 }
@@ -163,12 +156,7 @@ void ReplaceByRightmost (tBSTNodePtr PtrReplaced, tBSTNodePtr *RootPtr) {
 	}
 	else if((*RootPtr)->RPtr != NULL && (*RootPtr)->LPtr == NULL)
 	{
-		PtrReplaced->Key = (*RootPtr)->Key;
-		PtrReplaced->BSTNodeCont = (*RootPtr)->BSTNodeCont;
-
-		tBSTNodePtr right_subtree = (*RootPtr)->RPtr;
-		free(*RootPtr);
-		(*RootPtr) = right_subtree;
+		ReplaceByRightmost(PtrReplaced, &((*RootPtr)->RPtr));
 		return;
 	}
 	else if((*RootPtr)->RPtr == NULL && (*RootPtr)->LPtr == NULL)
@@ -322,7 +310,7 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)
 	{
 		free(*RootPtr);
-		(*RootPtr) = NULL;
+		BSTInit(RootPtr);
 	}
 	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr != NULL)
 	{
@@ -334,7 +322,6 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 		BSTDispose(&(*RootPtr)->LPtr);
 		return;
 	}
-
 }
 
 /* konec c401.c */
