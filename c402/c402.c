@@ -311,6 +311,7 @@ void BTPostorder (tBTNodePtr RootPtr)	{
 	while(!SEmptyP(&pointers))
 	{
 		RootPtr = STopPopP(&pointers);
+		SPushP(&pointers, RootPtr);
 		left = STopPopB(&bools);
 
 		if(left)
