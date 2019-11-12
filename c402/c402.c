@@ -265,10 +265,16 @@ void BTInorder (tBTNodePtr RootPtr)	{
 ** Leftmost_Inorder a zásobníku ukazatelů. Zpracování jednoho uzlu stromu
 ** realizujte jako volání funkce BTWorkOut().
 **/
+	tStackP stack;
+	SInitP(&stack);
 
-
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	Leftmost_Inorder(RootPtr, &stack);
+	while(!SEmptyP(&stack))
+	{
+		RootPtr = STopPopP(&stack);
+		BTWorkOut(RootPtr);
+		Leftmost_Inorder(RootPtr->RPtr, &stack);
+	}
 }
 
 /*                                 POSTORDER                                  */
@@ -281,10 +287,12 @@ void Leftmost_Postorder (tBTNodePtr ptr, tStackP *StackP, tStackB *StackB) {
 ** a současně do zásobníku bool hodnot ukládáme informaci, zda byl uzel
 ** navštíven poprvé a že se tedy ještě nemá zpracovávat.
 **/
-
-
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+	while(ptr != NULL)
+	{
+		SPushP(StackP, ptr);
+		SPushB(StackB, true);
+		ptr = ptr->LPtr;
+	}
 }
 
 void BTPostorder (tBTNodePtr RootPtr)	{
@@ -293,10 +301,29 @@ void BTPostorder (tBTNodePtr RootPtr)	{
 ** Leftmost_Postorder, zásobníku ukazatelů a zásobníku hotdnot typu bool.
 ** Zpracování jednoho uzlu stromu realizujte jako volání funkce BTWorkOut().
 **/
+	tStackB bools;
+	tStackP pointers;
+	bool left;
+	SInitB(&bools);
+	SInitP(&pointers);
 
+	Leftmost_Postorder(RootPtr, &pointers, &bools);
+	while(!SEmptyP(&pointers))
+	{
+		RootPtr = STopPopP(&pointers);
+		left = STopPopB(&bools);
 
-
-	 solved = FALSE;		  /* V případě řešení smažte tento řádek! */
+		if(left)
+		{
+			SPushB(&bools, false);
+			Leftmost_Postorder(RootPtr->RPtr, &pointers, &bools);
+		}
+		else
+		{
+			RootPtr = STopPopP(&pointers);
+			BTWorkOut(RootPtr);
+		}
+	}
 }
 
 
@@ -306,17 +333,17 @@ void BTDisposeTree (tBTNodePtr *RootPtr)	{
 **
 ** Funkci implementujte nerekurzivně s využitím zásobníku ukazatelů.
 **/
-	if((*RootPtr) == NULL)
-		return;
-
 	tStackP stack;
 	SInitP(&stack);
-	Leftmost_Inorder(*RootPtr, &stack);
+
+	Leftmost_Inorder((*RootPtr), &stack);
 	while(!SEmptyP(&stack))
 	{
 		*RootPtr = STopPopP(&stack);
 		if((*RootPtr)->RPtr != NULL)
-			Leftmost_Inorder(*RootPtr, &stack);
+		{
+			Leftmost_Inorder((*RootPtr)->RPtr, &stack);
+		}
 		free(*RootPtr);
 	}
 
