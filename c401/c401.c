@@ -304,24 +304,14 @@ void BSTDispose (tBSTNodePtr *RootPtr) {
 ** funkce.
 **/
 
-	if((*RootPtr) == NULL)
-		return;
-
-	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr == NULL)
-	{
-		free(*RootPtr);
-		BSTInit(RootPtr);
-	}
-	else if((*RootPtr)->LPtr == NULL && (*RootPtr)->RPtr != NULL)
-	{
-		BSTDispose(&(*RootPtr)->RPtr);
-		return;
-	}
-	else
+	if((*RootPtr) != NULL)
 	{
 		BSTDispose(&(*RootPtr)->LPtr);
-		return;
+		BSTDispose(&(*RootPtr)->RPtr);
+		free(*RootPtr);
 	}
+
+	BSTInit(RootPtr);
 }
 
 /* konec c401.c */
