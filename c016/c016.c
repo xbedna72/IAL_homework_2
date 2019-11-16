@@ -77,12 +77,21 @@ void htInit ( tHTable* ptrht ) {
 */
 
 tHTItem* htSearch ( tHTable* ptrht, tKey key ) {
-	int index = hashCode(key);
-	tHTItem *item = (*ptrht)[index];
-	while(item->key != key && item != NULL)
-		item = item->ptrnext;
+	if(ptrht != NULL)
+	{
+		int index = hashCode(key);
+		tHTItem *item = (*ptrht)[index]->ptrnext;
+		while(item != NULL)
+		{
+			if(item->key == key)
+				return item;
+			else
+				item = item->ptrnext;
+			}
 
-	return item;
+			return NULL;
+		}
+		return NULL;
 }
 
 /*
@@ -110,8 +119,7 @@ void htInsert ( tHTable* ptrht, tKey key, tData data ) {
 
 		printf("Here2\n");
 
-		int index = hashCode(key);
-		item = (*ptrht)[index];
+		item = (*ptrht)[hashCode(key)];
 		tHTItem *new_item = (tHTItem *) malloc(sizeof(struct tHTItem));
 		if(new_item == NULL)
 			return;
@@ -119,9 +127,9 @@ void htInsert ( tHTable* ptrht, tKey key, tData data ) {
 		printf("Here3\n");
 		new_item->data = data;
 		new_item->key = key;
-		new_item->ptrnext = item;
+		new_item->ptrnext = item->ptrnext;
 
-		(*ptrht)[index] = new_item;
+		(*ptrht)[hashCode(key)]->ptrnext = new_item;
 	}
 	return;
 }
